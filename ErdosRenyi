@@ -1,0 +1,53 @@
+import numpy as np
+import pandas as pd
+import networkx as nx
+from networkx import Graph
+
+def ErdosRenyi(prob, n, symmetric):
+    
+    #Initialise adjacency matrix to all zeros
+    AdjMat = np.full((n, n), 0)
+    
+    if(symmetric == False):
+    #Iterate over rows and columns of the initialised adjacency matrix
+        for i in range(n):
+            for j in range(n):
+            
+            #Ensure no self-loops in the network- not necessary in all applications
+                if(i == j):
+                    AdjMat[i,j]=0
+            
+            #Randomly assign each element of the matrix to either 1 or 0 as parameterised.
+            #As specified in function parameters, matrix is asymmetric
+                else:
+                    AdjMat[i,j]=np.random.choice((0,1), p=(1-prob,prob))
+    
+    #For networks which aren't symmetric
+    else:
+        for i in range(n):
+            for j in range(n):
+                
+                if(i == j):
+                    AdjMat[i,j]=0
+                    
+            #Randomly assign each element of the matrix to either 1 or 0 as parameterised.
+            #As specified in function parameters, matrix asymmetry is ensured by checking if 
+            #there is already an entry in a given position- if false, then this element and the 
+            #symmetric element are given a probability of a value                
+                else:
+                    if(AdjMat[i,j] != 0): pass
+                    else:
+                        AdjMat[i,j] = AdjMat[j,i] = np.random.choice((0,1), p=(1-prob,prob))      
+                    
+    return AdjMat
+    
+    
+    
+G = ErdosRenyi(0.3, 6, symmetric=False)
+AdjacencyMatrix = nx.from_numpy_matrix(G, create_using=nx.DiGraph)
+
+#Print out the adjacency matrix
+print(test)
+
+#Print out the network diagram
+nx.draw_networkx(AdjacencyMatrix, arrows=True)
